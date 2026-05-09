@@ -3,7 +3,6 @@
 #include "Dense.h"
 #include "Network.h"
 #include <chrono>
-#include <iostream>
 
 int main() {
 
