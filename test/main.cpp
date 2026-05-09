@@ -41,7 +41,9 @@ int main() {
     net.add(new ReLU());
     net.add(new Dense(16, 3));
     net.add(new Softmax());
+
     net.train(iris.X_train, iris.Y_train, 200, 0.02);
+    net.evaluate(iris.X_test, iris.Y_test);
 
     return 0;
 }

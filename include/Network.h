@@ -14,6 +14,8 @@ class Network {
     void train(const Matrix &X, const Matrix &Y, int epochs,
                double learning_rate);
 
+    void evaluate(const Matrix &X, const Matrix &Y);
+
   private:
     std::vector<std::unique_ptr<Layer>> layers;
 

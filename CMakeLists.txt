@@ -7,6 +7,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_library(neuronum STATIC
     src/Matrix.cpp
     src/Dataloader.cpp
+    src/Dense.cpp
+    src/Activation.cpp
+    src/Network.cpp
 )
 
 target_include_directories(neuronum PUBLIC

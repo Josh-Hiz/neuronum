@@ -26,7 +26,16 @@ Matrix Dense::forward(const Matrix &input_mat) {
 // backward: compute dW, db, return delta for previous layer
 Matrix Dense::backward(const Matrix &grad_mat) {
     dW = grad_mat * input_cache.transpose();
-    db = grad_mat;
+
+    // sum grad_mat across columns into a (output x 1) vector
+    db = Matrix(grad_mat.rows(), 1);
+    for (size_t i = 0; i < grad_mat.rows(); i++) {
+        double sum = 0.0;
+        for (size_t j = 0; j < grad_mat.cols(); j++)
+            sum += grad_mat.at(i, j);
+        db.at(i, 0) = sum;
+    }
+
     return W.transpose() * grad_mat;
 }
 

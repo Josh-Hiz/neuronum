@@ -91,3 +91,24 @@ void Network::train(const Matrix &X, const Matrix &Y, int epochs,
         printf("Epoch %3d — loss: %.4f  acc: %.1f%%\n", epoch, loss, acc);
     }
 }
+
+void Network::evaluate(const Matrix &X, const Matrix &Y) {
+    size_t n_samples = X.rows();
+    size_t n_features = X.cols();
+    size_t n_classes = Y.cols();
+
+    // same transpose as train()
+    Matrix X_t(n_features, n_samples);
+    Matrix Y_t(n_classes, n_samples);
+    for (size_t i = 0; i < n_samples; i++) {
+        for (size_t j = 0; j < n_features; j++)
+            X_t.at(j, i) = X.at(i, j);
+        for (size_t k = 0; k < n_classes; k++)
+            Y_t.at(k, i) = Y.at(i, k);
+    }
+
+    Matrix Y_pred = forward(X_t);
+    double loss = cross_entropy(Y_pred, Y_t);
+    double acc = accuracy(Y_pred, Y_t) * 100.0;
+    printf("Test  — loss: %.4f  acc: %.1f%%\n", loss, acc);
+}
