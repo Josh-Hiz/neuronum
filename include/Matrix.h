@@ -9,9 +9,9 @@ public:
   Matrix(const Matrix &other);
   Matrix &operator=(const Matrix &other);
 
-  Matrix &operator+(const Matrix &other) const;
-  Matrix &operator-(const Matrix &other) const;
-  Matrix &operator*(const Matrix &other) const;
+  Matrix operator+(const Matrix &other) const;
+  Matrix operator-(const Matrix &other) const;
+  Matrix operator*(const Matrix &other) const;
 
   Matrix transpose() const;
 
@@ -24,5 +24,5 @@ public:
 private:
   size_t rows_;
   size_t cols_;
-  double *data_;
+  double **data_;
 };
