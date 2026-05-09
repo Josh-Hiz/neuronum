@@ -1,4 +1,6 @@
 #include "../include/Network.h"
+#include <cmath>
+#include <cstdio>
 
 void Network::add(Layer *layer) {
     // Wrap the existing raw pointer around unique pointer
