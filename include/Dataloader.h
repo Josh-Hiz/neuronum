@@ -1,9 +1,10 @@
-// DataLoader.h
 #pragma once
+
 #include "Matrix.h"
 #include <string>
 #include <unordered_set>
 #include <vector>
+
 /*
  * A struct representing all the data we need to use.
  */

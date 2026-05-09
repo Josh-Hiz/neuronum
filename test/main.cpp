@@ -2,6 +2,7 @@
 #include "Dataloader.h"
 #include "Dense.h"
 #include "Network.h"
+#include <chrono>
 #include <iostream>
 
 int main() {
@@ -36,14 +37,58 @@ int main() {
 
     wine.X_train.print();
 
-    Network net;
-    net.add(new Dense(4, 16));
-    net.add(new ReLU());
-    net.add(new Dense(16, 3));
-    net.add(new Softmax());
+    // Make a network for IRIS
+    Network net_iris;
+    net_iris.add(new Dense(4, 16));
+    net_iris.add(new ReLU());
+    net_iris.add(new Dense(16, 3));
+    net_iris.add(new Softmax());
 
-    net.train(iris.X_train, iris.Y_train, 200, 0.02);
-    net.evaluate(iris.X_test, iris.Y_test);
+    auto train_start = std::chrono::high_resolution_clock::now();
+    net_iris.train(iris.X_train, iris.Y_train, 200, 0.02);
+    auto train_end = std::chrono::high_resolution_clock::now();
+
+    auto eval_start = std::chrono::high_resolution_clock::now();
+    net_iris.evaluate(iris.X_test, iris.Y_test);
+    auto eval_end = std::chrono::high_resolution_clock::now();
+
+    double train_ms =
+        std::chrono::duration<double, std::milli>(train_end - train_start)
+            .count();
+    double eval_ms =
+        std::chrono::duration<double, std::milli>(eval_end - eval_start)
+            .count();
+
+    printf("Training time:  %.2f ms\n", train_ms);
+    printf("Evaluation time:  %.2f ms\n", eval_ms);
+
+    printf("========================================\n");
+
+    // Make a network wine
+    Network net_wine;
+    net_wine.add(new Dense(11, 32));
+    net_wine.add(new ReLU());
+    net_wine.add(new Dense(32, 16));
+    net_wine.add(new ReLU());
+    net_wine.add(new Dense(16, 6));
+    net_wine.add(new Softmax());
+
+    train_start = std::chrono::high_resolution_clock::now();
+    net_wine.train(wine.X_train, wine.Y_train, 200, 0.02);
+    train_end = std::chrono::high_resolution_clock::now();
+
+    eval_start = std::chrono::high_resolution_clock::now();
+    net_wine.evaluate(wine.X_test, wine.Y_test);
+    eval_end = std::chrono::high_resolution_clock::now();
+
+    train_ms =
+        std::chrono::duration<double, std::milli>(train_end - train_start)
+            .count();
+    eval_ms = std::chrono::duration<double, std::milli>(eval_end - eval_start)
+                  .count();
+
+    printf("Training time:  %.2f ms\n", train_ms);
+    printf("Evaluation time:  %.2f ms\n", eval_ms);
 
     return 0;
 }

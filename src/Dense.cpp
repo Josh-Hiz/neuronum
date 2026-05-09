@@ -5,6 +5,7 @@
 Dense::Dense(size_t input_size, size_t output_size)
     : W(output_size, input_size), b(output_size, 1),
       dW(output_size, input_size), db(output_size, 1), input_cache(1, 1) {
+
     // Perform Xavier initialization
     std::mt19937 rng(42);
     double scale = std::sqrt(2.0 / input_size);
@@ -17,13 +18,13 @@ Dense::Dense(size_t input_size, size_t output_size)
     }
 }
 
-// forward: W·input + b, cache input for backprop
+// forward function, W·input + b, cache input for backprop
 Matrix Dense::forward(const Matrix &input_mat) {
     input_cache = input_mat;
     return (W * input_mat).broadcast_add(b); // not W * input_mat + b
 }
 
-// backward: compute dW, db, return delta for previous layer
+// backward propagation, compute dW, db, return gradient for previous layer
 Matrix Dense::backward(const Matrix &grad_mat) {
     dW = grad_mat * input_cache.transpose();
 
@@ -35,11 +36,10 @@ Matrix Dense::backward(const Matrix &grad_mat) {
             sum += grad_mat.at(i, j);
         db.at(i, 0) = sum;
     }
-
     return W.transpose() * grad_mat;
 }
 
-// update: gradient descent
+// gradient descent
 void Dense::update(double learning_rate) {
     W = W - dW * learning_rate;
     b = b - db * learning_rate;
