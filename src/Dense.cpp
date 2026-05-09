@@ -1,5 +1,6 @@
 #include "../include/Dense.h"
 
+#include <cmath>
 #include <random>
 
 Dense::Dense(size_t input_size, size_t output_size)

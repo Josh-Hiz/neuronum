@@ -103,10 +103,13 @@ void Network::evaluate(const Matrix &X, const Matrix &Y) {
     Matrix X_t(n_features, n_samples);
     Matrix Y_t(n_classes, n_samples);
     for (size_t i = 0; i < n_samples; i++) {
-        for (size_t j = 0; j < n_features; j++)
+        for (size_t j = 0; j < n_features; j++) {
             X_t.at(j, i) = X.at(i, j);
-        for (size_t k = 0; k < n_classes; k++)
+        }
+
+        for (size_t k = 0; k < n_classes; k++) {
             Y_t.at(k, i) = Y.at(i, k);
+        }
     }
 
     Matrix Y_pred = forward(X_t);

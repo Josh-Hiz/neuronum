@@ -10,34 +10,24 @@ int main() {
     // Iris
     Dataset iris = DataLoader::load("data/Iris.csv", "Species", 0.2, {"Id"});
 
-    std::cout << "=== IRIS ===\n";
-    std::cout << "X_train: " << iris.X_train.rows() << " x "
-              << iris.X_train.cols() << "\n";
-    std::cout << "Y_train: " << iris.Y_train.rows() << " x "
-              << iris.Y_train.cols() << "\n";
-    std::cout << "X_test:  " << iris.X_test.rows() << " x "
-              << iris.X_test.cols() << "\n";
-    std::cout << "Y_test:  " << iris.Y_test.rows() << " x "
-              << iris.Y_test.cols() << "\n";
-
+    printf("=== IRIS ===\n");
+    printf("X_train: %zu x %zu\n", iris.X_train.rows(), iris.X_train.cols());
+    printf("Y_train: %zu x %zu\n", iris.Y_train.rows(), iris.Y_train.cols());
+    printf("X_test:  %zu x %zu\n", iris.X_test.rows(), iris.X_test.cols());
+    printf("Y_test:  %zu x %zu\n", iris.Y_test.rows(), iris.Y_test.cols());
     iris.X_train.print();
 
     // Wine
     Dataset wine = DataLoader::load("data/winequality-red.csv", "quality", 0.2);
 
-    std::cout << "\n=== WINE ===\n";
-    std::cout << "X_train: " << wine.X_train.rows() << " x "
-              << wine.X_train.cols() << "\n";
-    std::cout << "Y_train: " << wine.Y_train.rows() << " x "
-              << wine.Y_train.cols() << "\n";
-    std::cout << "X_test:  " << wine.X_test.rows() << " x "
-              << wine.X_test.cols() << "\n";
-    std::cout << "Y_test:  " << wine.Y_test.rows() << " x "
-              << wine.Y_test.cols() << "\n";
-
+    printf("\n=== WINE ===\n");
+    printf("X_train: %zu x %zu\n", wine.X_train.rows(), wine.X_train.cols());
+    printf("Y_train: %zu x %zu\n", wine.Y_train.rows(), wine.Y_train.cols());
+    printf("X_test:  %zu x %zu\n", wine.X_test.rows(), wine.X_test.cols());
+    printf("Y_test:  %zu x %zu\n", wine.Y_test.rows(), wine.Y_test.cols());
     wine.X_train.print();
 
-    // Make a network for IRIS
+    // IRIS network
     Network net_iris;
     net_iris.add(new Dense(4, 16));
     net_iris.add(new ReLU());
@@ -58,13 +48,11 @@ int main() {
     double eval_ms =
         std::chrono::duration<double, std::milli>(eval_end - eval_start)
             .count();
-
-    printf("Training time:  %.2f ms\n", train_ms);
-    printf("Evaluation time:  %.2f ms\n", eval_ms);
-
+    printf("Training time:   %.2f ms\n", train_ms);
+    printf("Evaluation time: %.2f ms\n", eval_ms);
     printf("========================================\n");
 
-    // Make a network wine
+    // Wine network
     Network net_wine;
     net_wine.add(new Dense(11, 64));
     net_wine.add(new ReLU());
@@ -86,9 +74,44 @@ int main() {
             .count();
     eval_ms = std::chrono::duration<double, std::milli>(eval_end - eval_start)
                   .count();
+    printf("Training time:   %.2f ms\n", train_ms);
+    printf("Evaluation time: %.2f ms\n", eval_ms);
+    printf("========================================\n");
 
-    printf("Training time:  %.2f ms\n", train_ms);
-    printf("Evaluation time:  %.2f ms\n", eval_ms);
+    // Breast Cancer network
+    Dataset cancer = DataLoader::load("data/bc.csv", "diagnosis", 0.2, {"id"});
+
+    printf("\n=== BREAST CANCER ===\n");
+    printf("X_train: %zu x %zu\n", cancer.X_train.rows(),
+           cancer.X_train.cols());
+    printf("Y_train: %zu x %zu\n", cancer.Y_train.rows(),
+           cancer.Y_train.cols());
+    printf("X_test:  %zu x %zu\n", cancer.X_test.rows(), cancer.X_test.cols());
+    printf("Y_test:  %zu x %zu\n", cancer.Y_test.rows(), cancer.Y_test.cols());
+
+    Network net_cancer;
+    net_cancer.add(new Dense(30, 64));
+    net_cancer.add(new ReLU());
+    net_cancer.add(new Dense(64, 32));
+    net_cancer.add(new ReLU());
+    net_cancer.add(new Dense(32, 2));
+    net_cancer.add(new Softmax());
+
+    train_start = std::chrono::high_resolution_clock::now();
+    net_cancer.train(cancer.X_train, cancer.Y_train, 300, 0.001);
+    train_end = std::chrono::high_resolution_clock::now();
+
+    eval_start = std::chrono::high_resolution_clock::now();
+    net_cancer.evaluate(cancer.X_test, cancer.Y_test);
+    eval_end = std::chrono::high_resolution_clock::now();
+
+    train_ms =
+        std::chrono::duration<double, std::milli>(train_end - train_start)
+            .count();
+    eval_ms = std::chrono::duration<double, std::milli>(eval_end - eval_start)
+                  .count();
+    printf("Training time:   %.2f ms\n", train_ms);
+    printf("Evaluation time: %.2f ms\n", eval_ms);
 
     return 0;
 }
