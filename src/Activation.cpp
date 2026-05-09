@@ -29,7 +29,7 @@ Matrix ReLU::backward(const Matrix &gradient_matrix) {
 Matrix Sigmoid::forward(const Matrix &input_matrix) {
   Matrix output_matrix(input_matrix.rows(), input_matrix.cols());
   for (size_t i = 0; i < output_matrix.rows(); i++) {
-    for (size_t j = 0; j < output_matrix.rows(); j++) {
+    for (size_t j = 0; j < output_matrix.cols(); j++) {
       output_matrix.at(i, j) = 1.0 / (1.0 + std::exp(-input_matrix.at(i, j)));
     }
   }
