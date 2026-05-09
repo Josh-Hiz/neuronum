@@ -5,114 +5,127 @@
 Matrix::Matrix() : rows_(0), cols_(0), data_(nullptr) {}
 
 Matrix::Matrix(size_t rows, size_t cols) : rows_(rows), cols_(cols) {
-  data_ = new double *[rows_];
-  for (size_t i = 0; i < rows_; i++) {
-    data_[i] = new double[cols_];
-    for (size_t j = 0; j < cols_; j++) {
-      data_[i][j] = 0.0;
+    data_ = new double *[rows_];
+    for (size_t i = 0; i < rows_; i++) {
+        data_[i] = new double[cols_];
+        for (size_t j = 0; j < cols_; j++) {
+            data_[i][j] = 0.0;
+        }
     }
-  }
 }
 
 Matrix::~Matrix() {
-  for (size_t i = 0; i < rows_; i++) {
-    delete[] data_[i];
-  }
-  delete[] data_;
+    for (size_t i = 0; i < rows_; i++) {
+        delete[] data_[i];
+    }
+    delete[] data_;
 }
 
 Matrix::Matrix(const Matrix &other) : rows_(other.rows_), cols_(other.cols_) {
-  data_ = new double *[rows_];
-  for (size_t i = 0; i < rows_; i++) {
-    data_[i] = new double[cols_];
-    for (size_t j = 0; j < cols_; j++) {
-      data_[i][j] = other.data_[i][j];
+    data_ = new double *[rows_];
+    for (size_t i = 0; i < rows_; i++) {
+        data_[i] = new double[cols_];
+        for (size_t j = 0; j < cols_; j++) {
+            data_[i][j] = other.data_[i][j];
+        }
     }
-  }
 }
 
 Matrix &Matrix::operator=(const Matrix &other) {
-  if (this == &other) {
-    return *this;
-  }
-  for (size_t i = 0; i < rows_; i++) {
-    delete[] data_[i];
-  }
-  delete[] data_;
-
-  rows_ = other.rows_;
-  cols_ = other.cols_;
-  data_ = new double *[rows_];
-  for (size_t i = 0; i < rows_; i++) {
-    data_[i] = new double[cols_];
-    for (size_t j = 0; j < cols_; j++) {
-      data_[i][j] = other.data_[i][j];
+    if (this == &other) {
+        return *this;
     }
-  }
-  return *this;
+    for (size_t i = 0; i < rows_; i++) {
+        delete[] data_[i];
+    }
+    delete[] data_;
+
+    rows_ = other.rows_;
+    cols_ = other.cols_;
+    data_ = new double *[rows_];
+    for (size_t i = 0; i < rows_; i++) {
+        data_[i] = new double[cols_];
+        for (size_t j = 0; j < cols_; j++) {
+            data_[i][j] = other.data_[i][j];
+        }
+    }
+    return *this;
 }
 
 Matrix Matrix::operator+(const Matrix &other) const {
-  if (rows_ != other.rows_ || cols_ != other.cols_) {
-    throw std::invalid_argument("matrix addition: dimensions must match");
-  }
-  Matrix result(rows_, cols_);
-  for (size_t i = 0; i < rows_; i++) {
-    for (size_t j = 0; j < cols_; j++) {
-      result.data_[i][j] = data_[i][j] + other.data_[i][j];
+    if (rows_ != other.rows_ || cols_ != other.cols_) {
+        throw std::invalid_argument("matrix addition: dimensions must match");
     }
-  }
-  return result;
+    Matrix result(rows_, cols_);
+    for (size_t i = 0; i < rows_; i++) {
+        for (size_t j = 0; j < cols_; j++) {
+            result.data_[i][j] = data_[i][j] + other.data_[i][j];
+        }
+    }
+    return result;
+}
+
+Matrix Matrix::broadcast_add(const Matrix &col_vec) const {
+    if (col_vec.cols() != 1 || col_vec.rows() != rows_)
+        throw std::invalid_argument(
+            "broadcast_add: column vector rows must match");
+    Matrix result(rows_, cols_);
+    for (size_t i = 0; i < rows_; i++)
+        for (size_t j = 0; j < cols_; j++)
+            result.data_[i][j] = data_[i][j] + col_vec.at(i, 0);
+    return result;
 }
 
 Matrix Matrix::operator-(const Matrix &other) const {
-  if (rows_ != other.rows_ || cols_ != other.cols_) {
-    throw std::invalid_argument("matrix subtraction: dimensions must match");
-  }
-  Matrix result(rows_, cols_);
-  for (size_t i = 0; i < rows_; i++) {
-    for (size_t j = 0; j < cols_; j++) {
-      result.data_[i][j] = data_[i][j] - other.data_[i][j];
+    if (rows_ != other.rows_ || cols_ != other.cols_) {
+        throw std::invalid_argument(
+            "matrix subtraction: dimensions must match");
     }
-  }
-  return result;
+    Matrix result(rows_, cols_);
+    for (size_t i = 0; i < rows_; i++) {
+        for (size_t j = 0; j < cols_; j++) {
+            result.data_[i][j] = data_[i][j] - other.data_[i][j];
+        }
+    }
+    return result;
 }
 
 Matrix Matrix::operator*(const Matrix &other) const {
-  if (cols_ != other.rows_) {
-    throw std::invalid_argument("matrix multiplication: dimensions must match");
-  }
-  Matrix result(rows_, other.cols_);
-  for (size_t i = 0; i < rows_; i++) {
-    for (size_t j = 0; j < other.cols_; j++) {
-      double sum = 0.0;
-      for (size_t k = 0; k < cols_; k++) {
-        sum += data_[i][k] * other.data_[k][j];
-      }
-      result.data_[i][j] = sum;
+    if (cols_ != other.rows_) {
+        throw std::invalid_argument(
+            "matrix multiplication: dimensions must match");
     }
-  }
-  return result;
+    Matrix result(rows_, other.cols_);
+    for (size_t i = 0; i < rows_; i++) {
+        for (size_t j = 0; j < other.cols_; j++) {
+            double sum = 0.0;
+            for (size_t k = 0; k < cols_; k++) {
+                sum += data_[i][k] * other.data_[k][j];
+            }
+            result.data_[i][j] = sum;
+        }
+    }
+    return result;
 }
 
 Matrix Matrix::operator*(double scalar) const {
-  Matrix result(rows_, cols_);
-  for (size_t i = 0; i < rows_; i++) {
-    for (size_t j = 0; j < cols_; j++) {
-      result.data_[i][j] = data_[i][j] * scalar;
+    Matrix result(rows_, cols_);
+    for (size_t i = 0; i < rows_; i++) {
+        for (size_t j = 0; j < cols_; j++) {
+            result.data_[i][j] = data_[i][j] * scalar;
+        }
     }
-  }
-  return result;
+    return result;
 }
 
 Matrix Matrix::transpose() const {
-  Matrix result(cols_, rows_);
-  for (size_t i = 0; i < rows_; i++) {
-    for (size_t j = 0; j < cols_; j++) {
-      result.data_[j][i] = data_[i][j];
+    Matrix result(cols_, rows_);
+    for (size_t i = 0; i < rows_; i++) {
+        for (size_t j = 0; j < cols_; j++) {
+            result.data_[j][i] = data_[i][j];
+        }
     }
-  }
-  return result;
+    return result;
 }
 
 double &Matrix::at(size_t r, size_t c) { return data_[r][c]; }
@@ -124,27 +137,27 @@ size_t Matrix::rows() const { return rows_; }
 size_t Matrix::cols() const { return cols_; }
 
 void Matrix::print(size_t max_rows) const {
-  size_t row_limit = (max_rows > rows_) ? rows_ : max_rows;
-  for (size_t i = 0; i < row_limit; i++) {
-    printf("[");
-    for (size_t j = 0; j < cols_; j++) {
-      if (j == cols_ - 1) {
-        if (data_[i][j] < 0) {
-          printf("%.4f", data_[i][j]);
-        } else {
-          printf(" %.4f", data_[i][j]);
+    size_t row_limit = (max_rows > rows_) ? rows_ : max_rows;
+    for (size_t i = 0; i < row_limit; i++) {
+        printf("[");
+        for (size_t j = 0; j < cols_; j++) {
+            if (j == cols_ - 1) {
+                if (data_[i][j] < 0) {
+                    printf("%.4f", data_[i][j]);
+                } else {
+                    printf(" %.4f", data_[i][j]);
+                }
+            } else {
+                if (data_[i][j] < 0) {
+                    printf("%.4f, ", data_[i][j]);
+                } else {
+                    printf(" %.4f, ", data_[i][j]);
+                }
+            }
         }
-      } else {
-        if (data_[i][j] < 0) {
-          printf("%.4f, ", data_[i][j]);
-        } else {
-          printf(" %.4f, ", data_[i][j]);
-        }
-      }
+        printf("]\n");
     }
-    printf("]\n");
-  }
-  if (row_limit < rows_) {
-    printf("... %zu more rows\n", rows_ - row_limit);
-  }
+    if (row_limit < rows_) {
+        printf("... %zu more rows\n", rows_ - row_limit);
+    }
 }

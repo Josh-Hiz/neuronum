@@ -1,4 +1,7 @@
+#include "Activation.h"
 #include "Dataloader.h"
+#include "Dense.h"
+#include "Network.h"
 #include <iostream>
 
 int main() {
@@ -32,6 +35,13 @@ int main() {
               << wine.Y_test.cols() << "\n";
 
     wine.X_train.print();
+
+    Network net;
+    net.add(new Dense(4, 16));
+    net.add(new ReLU());
+    net.add(new Dense(16, 3));
+    net.add(new Softmax());
+    net.train(iris.X_train, iris.Y_train, 200, 0.02);
 
     return 0;
 }

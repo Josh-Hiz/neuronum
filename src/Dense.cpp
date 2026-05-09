@@ -20,7 +20,7 @@ Dense::Dense(size_t input_size, size_t output_size)
 // forward: W·input + b, cache input for backprop
 Matrix Dense::forward(const Matrix &input_mat) {
     input_cache = input_mat;
-    return W * input_mat + b;
+    return (W * input_mat).broadcast_add(b); // not W * input_mat + b
 }
 
 // backward: compute dW, db, return delta for previous layer

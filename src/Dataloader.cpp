@@ -22,7 +22,9 @@ Matrix DataLoader::normalize(const Matrix &X) {
             sq_sum += (X.at(i, j) - mean) * (X.at(i, j) - mean);
         }
         double std_dev = std::sqrt(sq_sum / X.rows());
-
+        if (std_dev == 0.0) {
+            std_dev = 1.0;
+        }
         // Normalize the data for the column
         for (size_t i = 0; i < X.rows(); i++) {
             res.at(i, j) = (X.at(i, j) - mean) / std_dev;
