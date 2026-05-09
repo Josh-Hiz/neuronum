@@ -49,13 +49,18 @@ Matrix Sigmoid::backward(const Matrix &gradient_matrix) {
 
 Matrix Softmax::forward(const Matrix &input_matrix) {
   Matrix output_matrix(input_matrix.rows(), input_matrix.cols());
-  for (size_t i = 0; i < input_matrix.rows(); i++) {
-    double sum = 0.0;
-    for (size_t j = 0; j < input_matrix.cols(); j++) {
-      sum += std::exp(input_matrix.at(i, j));
+  for (size_t j = 0; j < input_matrix.cols(); j++) {
+    double max_val = input_matrix.at(0, j);
+    for (size_t i = 1; i < input_matrix.rows(); i++) {
+      max_val = std::max(max_val, input_matrix.at(i, j));
     }
-    for (size_t j = 0; j < input_matrix.cols(); j++) {
-      output_matrix.at(i, j) = std::exp(input_matrix.at(i, j)) / sum;
+    double sum = 0.0;
+    for (size_t i = 0; i < input_matrix.rows(); i++) {
+      output_matrix.at(i, j) = std::exp(input_matrix.at(i, j) - max_val);
+      sum += output_matrix.at(i, j);
+    }
+    for (size_t i = 0; i < input_matrix.rows(); i++) {
+      output_matrix.at(i, j) /= sum;
     }
   }
   return output_matrix;
