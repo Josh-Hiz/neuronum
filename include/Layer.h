@@ -3,8 +3,11 @@
 #include "Matrix.h"
 
 class Layer {
-public:
-  virtual ~Layer() = default;
-  virtual Matrix forward(const Matrix &input) = 0;
-  virtual Matrix backward(const Matrix &grad, double learning_rate) = 0;
+  public:
+    // Pure virtual functions to implement in layer subclasses
+    virtual ~Layer() = default;
+    virtual Matrix forward(const Matrix &input_mat) = 0;
+    virtual Matrix backward(const Matrix &grad_mat) = 0;
+    // Not a pure virtual function because activation functions dont update
+    virtual void update(double learning_rate) {};
 };
