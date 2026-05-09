@@ -112,5 +112,44 @@ int main() {
     printf("Training time:   %.2f ms\n", train_ms);
     printf("Evaluation time: %.2f ms\n", eval_ms);
 
+    Dataset liver =
+        DataLoader::load("data/indian_liver.csv", "Dataset", 0.2, {"Gender"});
+
+    printf("\n=== LIVER DISEASE ===\n");
+    printf("X_train: %zu x %zu\n", liver.X_train.rows(), liver.X_train.cols());
+    printf("Y_train: %zu x %zu\n", liver.Y_train.rows(), liver.Y_train.cols());
+    printf("X_test:  %zu x %zu\n", liver.X_test.rows(), liver.X_test.cols());
+    printf("Y_test:  %zu x %zu\n", liver.Y_test.rows(), liver.Y_test.cols());
+
+    Network net_liver;
+    net_liver.add(new Dense(9, 32));
+    net_liver.add(new ReLU());
+    net_liver.add(new Dense(32, 64));
+    net_liver.add(new ReLU());
+    net_liver.add(new Dense(64, 32));
+    net_liver.add(new ReLU());
+    net_liver.add(new Dense(32, 16));
+    net_liver.add(new ReLU());
+    net_liver.add(new Dense(16, 8));
+    net_liver.add(new ReLU());
+    net_liver.add(new Dense(8, 2));
+    net_liver.add(new Softmax());
+
+    train_start = std::chrono::high_resolution_clock::now();
+    net_liver.train(liver.X_train, liver.Y_train, 500, 0.0001);
+    train_end = std::chrono::high_resolution_clock::now();
+
+    eval_start = std::chrono::high_resolution_clock::now();
+    net_liver.evaluate(liver.X_test, liver.Y_test);
+    eval_end = std::chrono::high_resolution_clock::now();
+
+    train_ms =
+        std::chrono::duration<double, std::milli>(train_end - train_start)
+            .count();
+    eval_ms = std::chrono::duration<double, std::milli>(eval_end - eval_start)
+                  .count();
+    printf("Training time:   %.2f ms\n", train_ms);
+    printf("Evaluation time: %.2f ms\n", eval_ms);
+
     return 0;
 }

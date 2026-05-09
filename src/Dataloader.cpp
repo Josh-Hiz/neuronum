@@ -66,7 +66,9 @@ Matrix DataLoader::one_hot_encode(const std::vector<std::string> &labels,
 Dataset DataLoader::load(const std::string &path, const std::string &label_col,
                          double test_ratio,
                          const std::unordered_set<std::string> &ignore_cols) {
-    rapidcsv::Document doc(path);
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(),
+                           rapidcsv::SeparatorParams(),
+                           rapidcsv::ConverterParams(true, 0.0));
     size_t rows = doc.GetRowCount(), cols = doc.GetColumnCount();
     std::vector<std::string> feature_names;
     for (size_t i = 0; i < cols; i++) {

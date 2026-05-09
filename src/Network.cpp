@@ -17,11 +17,18 @@ Matrix Network::forward(const Matrix &X) {
 
 void Network::backward(const Matrix &Y_pred, const Matrix &Y_true) {
     Matrix output_gradient = Y_pred - Y_true;
-    for (int i = layers.size() - 1; i >= 0; i--) {
+
+    // clip to prevent NaN from extreme (outliers) values
+    for (size_t i = 0; i < output_gradient.rows(); i++) {
+        for (size_t j = 0; j < output_gradient.cols(); j++) {
+            output_gradient.at(i, j) =
+                std::max(-1.0, std::min(1.0, output_gradient.at(i, j)));
+        }
+    }
+    for (int i = (int)layers.size() - 1; i >= 0; i--) {
         output_gradient = layers[i]->backward(output_gradient);
     }
 }
-
 void Network::update(double learning_rate) {
     for (auto &layer : layers) {
         layer->update(learning_rate);
@@ -33,7 +40,7 @@ double Network::cross_entropy(const Matrix &Y_pred, const Matrix &Y_true) {
     for (size_t j = 0; j < Y_pred.cols(); j++) {
         for (size_t i = 0; i < Y_pred.rows(); i++) {
             if (Y_true.at(i, j) > 0.5) {
-                loss -= std::log(Y_pred.at(i, j) + 1e-9);
+                loss -= std::log(Y_pred.at(i, j) + 1e-7);
             }
         }
     }
