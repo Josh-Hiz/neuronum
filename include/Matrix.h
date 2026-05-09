@@ -4,6 +4,7 @@
 
 class Matrix {
 public:
+  Matrix();
   Matrix(size_t rows, size_t cols);
   ~Matrix();
   Matrix(const Matrix &other);
@@ -20,6 +21,8 @@ public:
 
   size_t rows() const;
   size_t cols() const;
+
+  void print(size_t max_rows = 10) const;
 
 private:
   size_t rows_;
