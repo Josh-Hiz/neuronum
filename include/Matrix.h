@@ -14,6 +14,8 @@ public:
   Matrix operator-(const Matrix &other) const;
   Matrix operator*(const Matrix &other) const;
 
+  Matrix operator*(double scalar) const;
+
   Matrix transpose() const;
 
   double &at(size_t r, size_t c);
