@@ -66,15 +66,15 @@ int main() {
 
     // Make a network wine
     Network net_wine;
-    net_wine.add(new Dense(11, 32));
+    net_wine.add(new Dense(11, 64));
     net_wine.add(new ReLU());
-    net_wine.add(new Dense(32, 16));
+    net_wine.add(new Dense(64, 32));
     net_wine.add(new ReLU());
-    net_wine.add(new Dense(16, 6));
+    net_wine.add(new Dense(32, 6));
     net_wine.add(new Softmax());
 
     train_start = std::chrono::high_resolution_clock::now();
-    net_wine.train(wine.X_train, wine.Y_train, 200, 0.02);
+    net_wine.train(wine.X_train, wine.Y_train, 500, 0.001);
     train_end = std::chrono::high_resolution_clock::now();
 
     eval_start = std::chrono::high_resolution_clock::now();
