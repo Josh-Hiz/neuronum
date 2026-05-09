@@ -2,7 +2,7 @@
 
 #include "Layer.h"
 
-class Dense : Layer {
+class Dense : public Layer {
   public:
     Dense(size_t input_size, size_t output_size);
     Matrix forward(const Matrix &input_mat) override;
