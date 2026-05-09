@@ -1,7 +1,6 @@
 #include "../include/Dataloader.h"
 #include "../external/rapidcsv.h"
 
-#include <iostream>
 #include <random>
 #include <unordered_map>
 #include <unordered_set>
@@ -63,14 +62,15 @@ Matrix DataLoader::one_hot_encode(const std::vector<std::string> &labels,
 }
 
 Dataset DataLoader::load(const std::string &path, const std::string &label_col,
-                         double test_ratio) {
+                         double test_ratio,
+                         const std::unordered_set<std::string> &ignore_cols) {
     rapidcsv::Document doc(path);
     size_t rows = doc.GetRowCount(), cols = doc.GetColumnCount();
     std::vector<std::string> feature_names;
     for (size_t i = 0; i < cols; i++) {
         std::string cname = doc.GetColumnName(i);
-
-        if (cname != label_col) {
+        if ((cname != label_col) &&
+            (ignore_cols.find(cname) == ignore_cols.end())) {
             feature_names.push_back(cname);
         }
     }
@@ -97,7 +97,7 @@ Dataset DataLoader::load(const std::string &path, const std::string &label_col,
     // finishes execution
     X = normalize(X);
 
-    // --- shuffle indices ---
+    // shuffle indices to get random rows
     std::vector<size_t> indices(rows);
     std::iota(indices.begin(), indices.end(), 0);
     std::mt19937 rng(42);

@@ -118,10 +118,23 @@ size_t Matrix::cols() const { return cols_; }
 void Matrix::print(size_t max_rows) const {
     size_t row_limit = (max_rows > rows_) ? rows_ : max_rows;
     for (size_t i = 0; i < row_limit; i++) {
+        printf("[");
         for (size_t j = 0; j < cols_; j++) {
-            printf("%.2f ", data_[i][j]);
+            if (j == cols_ - 1) {
+                if (data_[i][j] < 0) {
+                    printf("%.4f", data_[i][j]);
+                } else {
+                    printf(" %.4f", data_[i][j]);
+                }
+            } else {
+                if (data_[i][j] < 0) {
+                    printf("%.4f, ", data_[i][j]);
+                } else {
+                    printf(" %.4f, ", data_[i][j]);
+                }
+            }
         }
-        printf("\n");
+        printf("]\n");
     }
     if (row_limit < rows_) {
         printf("... %zu more rows\n", rows_ - row_limit);
