@@ -5,7 +5,7 @@
 class ReLU : public Layer {
 public:
   Matrix forward(const Matrix &input_matrix) override;
-  Matrix backward(const Matrix &gradient_matrix, double learning_rate) override;
+  Matrix backward(const Matrix &gradient_matrix) override;
 
 private:
   Matrix input_cache;
@@ -14,7 +14,7 @@ private:
 class Sigmoid : public Layer {
 public:
   Matrix forward(const Matrix &input_matrix) override;
-  Matrix backward(const Matrix &gradient_matrix, double learning_rate) override;
+  Matrix backward(const Matrix &gradient_matrix) override;
 
 private:
   Matrix output_cache;
@@ -23,5 +23,5 @@ private:
 class Softmax : public Layer {
 public:
   Matrix forward(const Matrix &input_matrix) override;
-  Matrix backward(const Matrix &gradient_matrix, double learning_rate) override;
+  Matrix backward(const Matrix &gradient_matrix);
 };
