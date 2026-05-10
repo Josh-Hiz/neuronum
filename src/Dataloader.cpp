@@ -130,7 +130,7 @@ Dataset DataLoader::load(const std::string &path, const std::string &label_col,
         for (size_t j = 0; j < n_features; j++) {
             X_test.at(i, j) = X.at(src, j);
         }
-        for (int k = 0; k < n_classes; k++) {
+        for (size_t k = 0; k < n_classes; k++) {
             Y_test.at(i, k) = Y.at(src, k);
         }
     }
