@@ -12,6 +12,11 @@ add_library(neuronum STATIC
     src/Network.cpp
 )
 
+target_compile_options(neuronum PRIVATE
+    $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra -Werror>
+    $<$<CXX_COMPILER_ID:MSVC>:/Wall /WX>
+)
+
 target_include_directories(neuronum PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/external
