@@ -186,6 +186,6 @@ This is called Xavier initialization, and is a standard way of initializing weig
 ## 5. Sources
 
 - CS 583: Deep Learning
-- Claude, ChatGPT, Gemini
-- https://medium.com/@sanathshetty444/the-mathematics-behind-deep-learning-a-complete-guide-2f40d3d55a76
-- https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi
+- Claude.ai
+- <https://medium.com/@sanathshetty444/the-mathematics-behind-deep-learning-a-complete-guide-2f40d3d55a76>
+- <https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi>
