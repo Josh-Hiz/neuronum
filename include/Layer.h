@@ -9,5 +9,5 @@ class Layer {
     virtual Matrix forward(const Matrix &input_mat) = 0;
     virtual Matrix backward(const Matrix &grad_mat) = 0;
     // Not a pure virtual function because activation functions dont update
-    virtual void update(double learning_rate) {};
+    virtual void update(double) {};
 };
