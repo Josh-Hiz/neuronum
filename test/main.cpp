@@ -151,5 +151,44 @@ int main() {
     printf("Training time:   %.2f ms\n", train_ms);
     printf("Evaluation time: %.2f ms\n", eval_ms);
 
+    Dataset credit_card =
+        DataLoader::load("data/credit_card.csv", "default", 0.2, {"ID"});
+
+    printf("\n=== CREDIT CARD ===\n");
+    printf("X_train: %zu x %zu\n", credit_card.X_train.rows(),
+           credit_card.X_train.cols());
+    printf("Y_train: %zu x %zu\n", credit_card.Y_train.rows(),
+           credit_card.Y_train.cols());
+    printf("X_test:  %zu x %zu\n", credit_card.X_test.rows(),
+           credit_card.X_test.cols());
+    printf("Y_test:  %zu x %zu\n", credit_card.Y_test.rows(),
+           credit_card.Y_test.cols());
+
+    Network cc_net;
+    cc_net.add(new Dense(23, 32));
+    cc_net.add(new ReLU());
+    cc_net.add(new Dense(32, 64));
+    cc_net.add(new ReLU());
+    cc_net.add(new Dense(64, 16));
+    cc_net.add(new ReLU());
+    cc_net.add(new Dense(16, 2));
+    cc_net.add(new Softmax());
+
+    train_start = std::chrono::high_resolution_clock::now();
+    cc_net.train(credit_card.X_train, credit_card.Y_train, 100, 0.0001);
+    train_end = std::chrono::high_resolution_clock::now();
+
+    eval_start = std::chrono::high_resolution_clock::now();
+    cc_net.evaluate(credit_card.X_test, credit_card.Y_test);
+    eval_end = std::chrono::high_resolution_clock::now();
+
+    train_ms =
+        std::chrono::duration<double, std::milli>(train_end - train_start)
+            .count();
+    eval_ms = std::chrono::duration<double, std::milli>(eval_end - eval_start)
+                  .count();
+    printf("Training time:   %.2f ms\n", train_ms);
+    printf("Evaluation time: %.2f ms\n", eval_ms);
+
     return 0;
 }
